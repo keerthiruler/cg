@@ -1,0 +1,115 @@
+#include <glut.h>
+#include <math.h>
+
+GLfloat vertices[3][2] = {
+    {0.0, 1.0},
+    {-0.5, -0.5},
+    {0.5, -0.5}
+};
+
+GLfloat angle = 0.0;
+GLfloat translateX = 0.0;
+GLfloat translateY = 0.0;
+GLfloat scaleX = 1.0;
+GLfloat scaleY = 1.0;
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+
+    glTranslatef(translateX, translateY, 0);
+    glRotatef(angle, 0, 0, 1);
+    glScalef(scaleX, scaleY, 1);
+
+    glColor3f(1, 1, 1);
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < 3; i++)
+        glVertex2fv(vertices[i]);
+    glEnd();
+
+    glFlush();
+}
+
+void menu(int option) {
+    switch (option) {
+        case 1:
+            translateX -= 0.1;
+            break;
+        case 2:
+            translateX += 0.1;
+            break;
+        case 3:
+            translateY -= 0.1;
+            break;
+        case 4:
+            translateY += 0.1;
+            break;
+        case 5:
+            scaleX += 0.1;
+            scaleY += 0.1;
+            break;
+        case 6:
+            scaleX -= 0.1;
+            scaleY -= 0.1;
+            break;
+        case 7:
+            angle += 10.0;
+            if (angle > 360) angle -= 360;
+            break;
+        case 8:
+            angle -= 10.0;
+            if (angle < 0) angle += 360;
+            break;
+        case 9:
+            angle = 0.0;
+            translateX = 0.0;
+            translateY = 0.0;
+            scaleX = 1.0;
+            scaleY = 1.0;
+            break;
+        case 10:
+            exit(0);
+            break;
+    }
+    glutPostRedisplay();
+}
+
+void createMenu() {
+    glutCreateMenu(menu);
+    glutAddMenuEntry("Translate Left", 1);
+    glutAddMenuEntry("Translate Right", 2);
+    glutAddMenuEntry("Translate Down", 3);
+    glutAddMenuEntry("Translate Up", 4);
+    glutAddMenuEntry("Scale Up", 5);
+    glutAddMenuEntry("Scale Down", 6);
+    glutAddMenuEntry("Rotate Clockwise", 7);
+    glutAddMenuEntry("Rotate Anti-clockwise", 8);
+    glutAddMenuEntry("Reset", 9);
+    glutAddMenuEntry("Exit", 10);
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
+
+void init() {
+    glClearColor(0, 0, 0, 1);
+}
+
+void reshape(int w, int h) {
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(-1, 1, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(800, 600);
+    glutCreateWindow("2D Transformations");
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    createMenu();
+    init();
+    glutMainLoop();
+    return 0;
+}

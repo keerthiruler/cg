@@ -1,0 +1,51 @@
+#include <glut.h>
+#include <math.h>
+
+int windowWidth = 800;
+int windowHeight = 600;
+int squareSize = 50;
+int squarePosX = 0;
+float animationSpeed = 1.0;
+
+void init() {
+glClearColor(0.0, 0.0, 0.0, 1.0);
+glMatrixMode(GL_PROJECTION);
+gluOrtho2D(0.0, windowWidth, 0.0, windowHeight);
+}
+
+void drawSquare() {
+glColor3f(1.0, 1.0, 1.0);
+glBegin(GL_QUADS);
+glVertex2i(squarePosX, windowHeight/2);
+glVertex2i(squarePosX + squareSize, windowHeight/2);
+glVertex2i(squarePosX + squareSize, windowHeight/2+ squareSize);
+glVertex2i(squarePosX, windowHeight/2+ squareSize);
+glEnd();
+}
+
+void display() {
+glClear(GL_COLOR_BUFFER_BIT);
+drawSquare();
+glutSwapBuffers();
+}
+
+void update(int value) {
+squarePosX += animationSpeed;
+if (squarePosX>windowWidth) {
+squarePosX = -squareSize;
+}
+animationSpeed += 0.01;
+glutPostRedisplay();
+glutTimerFunc(1000/60, update, 0);
+}
+
+int main(int argc, char** argv) {
+glutInit(&argc, argv);
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); glutInitWindowSize(windowWidth, windowHeight); glutInitWindowPosition(100, 100);
+glutCreateWindow("Animation Effects with Varying Speed");
+init();
+glutDisplayFunc(display);
+glutTimerFunc(0, update, 0);
+glutMainLoop();
+return 0;
+}
